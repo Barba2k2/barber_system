@@ -1,4 +1,5 @@
 import Footer from "./_components/footer";
+import AuthProvider from "./_providers/auth";
 import "./globals.css";
 
 export const metadata = {
@@ -14,8 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`dark`}>
-        {children}
-        <Footer />
+        <AuthProvider>
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
