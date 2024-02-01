@@ -1,22 +1,27 @@
-import { Button } from "@/app/_components/ui/button";
 import { db } from "@/app/_lib/prisma";
 import BarbershopInfo from "./_components/barbershop-info";
 import ServiceItem from "./_components/service-item";
+import { getServerSession } from "next-auth";
 
-interface BarbershopDetailsPage {
+interface BarbershopDetailsPageProps {
   params: {
     id?: string;
   };
 }
 
-const BarbershopDetailsPage = async ({ params }: BarbershopDetailsPage) => {
+const BarbershopDetailsPage = async ({
+  params,
+}: BarbershopDetailsPageProps) => {
+
   if (!params.id) {
     // TODO: Redirect to home page
     return null;
   }
 
   const barbershop = await db.barbershop.findUnique({
-    where: { id: params.id },
+    where: {
+      id: params.id,
+    },
     include: {
       services: true,
     },
@@ -31,7 +36,7 @@ const BarbershopDetailsPage = async ({ params }: BarbershopDetailsPage) => {
     <div>
       <BarbershopInfo barbershop={barbershop} />
 
-      <div className="px5 flex flex-col gap-4 py-6">
+      <div className="px-5 flex flex-col gap-4 py-6">
         {barbershop.services.map((service) => (
           <ServiceItem key={service.id} service={service} />
         ))}
