@@ -18,7 +18,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { generateDayTimeList } from "../_helpers/hours";
 import { format, setHours, setMinutes } from "date-fns";
-import { saveBooking } from "../_actions/save-booking";
+import { saveBooking } from '../_actions/save-booking'
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -27,7 +27,7 @@ import { getDayBookings } from "../_actions/get-day-bokings";
 interface ServiceItemProps {
   barbershop: Barbershop;
   service: Service;
-  isAuthenticated: Boolean;
+  isAuthenticated: boolean;
 }
 
 const ServiceItem = ({
@@ -46,15 +46,16 @@ const ServiceItem = ({
   const [dayBookings, setDayBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
-    if (!date) return;
+    if (!date) {
+      return;
+    }
 
-    const refreshAvaliabreHours = async () => {
+    const refreshAvailableHours = async () => {
       const _dayBookings = await getDayBookings(barbershop.id, date);
-
       setDayBookings(_dayBookings);
     };
 
-    refreshAvaliabreHours();
+    refreshAvailableHours();
   }, [date, barbershop.id]);
 
   const handleDateClick = (date: Date | undefined) => {
@@ -68,7 +69,7 @@ const ServiceItem = ({
 
   const handleBookingClick = () => {
     if (!isAuthenticated) {
-      signIn("google");
+      return signIn("google");
     }
   };
 
@@ -76,7 +77,9 @@ const ServiceItem = ({
     setSubmitIsLoading(true);
 
     try {
-      if (!hour || !date || !data?.user) return;
+      if (!hour || !date || !data?.user) {
+        return;
+      }
 
       const dateHour = Number(hour.split(":")[0]);
       const dateMinutes = Number(hour.split(":")[1]);
@@ -91,13 +94,10 @@ const ServiceItem = ({
       });
 
       setSheetIsOpen(false);
-
       setHour(undefined);
-
       setDate(undefined);
-
-      toast("Reserva realizada com Sucesso!", {
-        description: format(newDate, "'Para' dd 'de' MMMM 'as' HH':'mm''.'", {
+      toast("Reserva realizada com sucesso!", {
+        description: format(newDate, "'Para' dd 'de' MMMM 'às' HH':'mm'.'", {
           locale: ptBR,
         }),
         action: {
@@ -113,7 +113,9 @@ const ServiceItem = ({
   };
 
   const timeList = useMemo(() => {
-    if (!date) return [];
+    if (!date) {
+      return [];
+    }
 
     return generateDayTimeList(date).filter((time) => {
       const timeHour = Number(time.split(":")[0]);
@@ -126,7 +128,9 @@ const ServiceItem = ({
         return bookingHour === timeHour && bookingMinutes === timeMinutes;
       });
 
-      if (!booking) return true;
+      if (!booking) {
+        return true;
+      }
 
       return false;
     });
@@ -134,8 +138,8 @@ const ServiceItem = ({
 
   return (
     <Card>
-      <CardContent className="p-3">
-        <div className="flex gap-4 items-center">
+      <CardContent className="p-3 w-full">
+        <div className="flex gap-4 items-center w-full">
           <div className="relative min-h-[110px] min-w-[110px] max-h-[110px] max-w-[110px]">
             <Image
               className="rounded-lg"
@@ -145,9 +149,10 @@ const ServiceItem = ({
               alt={service.name}
             />
           </div>
+
           <div className="flex flex-col w-full">
             <h2 className="font-bold">{service.name}</h2>
-            <p className="text-sm text-gray-400 py-1">{service.description}</p>
+            <p className="text-sm text-gray-400">{service.description}</p>
 
             <div className="flex items-center justify-between mt-3">
               <p className="text-primary text-sm font-bold">
@@ -168,7 +173,7 @@ const ServiceItem = ({
                     <SheetTitle>Fazer Reserva</SheetTitle>
                   </SheetHeader>
 
-                  <div className="py-6 px-5">
+                  <div className="py-6">
                     <Calendar
                       mode="single"
                       selected={date}
@@ -178,7 +183,7 @@ const ServiceItem = ({
                       styles={{
                         head_cell: {
                           width: "100%",
-                          textTransform: "uppercase",
+                          textTransform: "capitalize",
                         },
                         cell: {
                           width: "100%",
@@ -201,7 +206,7 @@ const ServiceItem = ({
                     />
                   </div>
 
-                  {/* Show free times only same date is selected */}
+                  {/* Mostrar lista de horários apenas se alguma data estiver selecionada */}
                   {date && (
                     <div className="flex gap-3 overflow-x-auto py-6 px-5 border-t border-solid border-secondary [&::-webkit-scrollbar]:hidden">
                       {timeList.map((time) => (
@@ -223,6 +228,7 @@ const ServiceItem = ({
                         <div className="flex justify-between">
                           <h2 className="font-bold">{service.name}</h2>
                           <h3 className="font-bold text-sm">
+                            {" "}
                             {Intl.NumberFormat("pt-BR", {
                               style: "currency",
                               currency: "BRL",
@@ -234,14 +240,16 @@ const ServiceItem = ({
                           <div className="flex justify-between">
                             <h3 className="text-gray-400 text-sm">Data</h3>
                             <h4 className="text-sm">
-                              {format(date, "dd 'de' MMMM", { locale: ptBR })}
+                              {format(date, "dd 'de' MMMM", {
+                                locale: ptBR,
+                              })}
                             </h4>
                           </div>
                         )}
 
                         {hour && (
                           <div className="flex justify-between">
-                            <h3 className="text-gray-400 text-sm">Horario</h3>
+                            <h3 className="text-gray-400 text-sm">Horário</h3>
                             <h4 className="text-sm">{hour}</h4>
                           </div>
                         )}
@@ -253,6 +261,7 @@ const ServiceItem = ({
                       </CardContent>
                     </Card>
                   </div>
+
                   <SheetFooter className="px-5">
                     <Button
                       onClick={handleBookingSubmit}
@@ -261,7 +270,7 @@ const ServiceItem = ({
                       {submitIsLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Confirmar Reserva
+                      Confirmar reserva
                     </Button>
                   </SheetFooter>
                 </SheetContent>

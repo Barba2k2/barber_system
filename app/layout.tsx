@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={`${inter.className} dark`}>
         <AuthProvider>
           {children}
-          {/* <Toaster /> */}
+          <Toaster />
           <Footer />
         </AuthProvider>
       </body>

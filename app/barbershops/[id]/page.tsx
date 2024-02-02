@@ -16,7 +16,7 @@ const BarbershopDetailsPage = async ({
   const session = await getServerSession(authOptions);
 
   if (!params.id) {
-    // TODO: Redirect to home page
+    // TODO: redirect to home page
     return null;
   }
 
@@ -30,7 +30,7 @@ const BarbershopDetailsPage = async ({
   });
 
   if (!barbershop) {
-    // TODO: Redirect to home page
+    // TODO: redirect to home page
     return null;
   }
 

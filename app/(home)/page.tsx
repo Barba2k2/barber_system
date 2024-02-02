@@ -14,7 +14,7 @@ export default async function Home() {
   const [barbershops, confirmedBookings] = await Promise.all([
     db.barbershop.findMany({}),
     session?.user
-      ? await db.booking.findMany({
+      ? db.booking.findMany({
           where: {
             userId: (session.user as any).id,
             date: {
@@ -34,10 +34,10 @@ export default async function Home() {
       <Header />
 
       <div className="px-5 pt-5">
-        <h2 className="text-xl font-bold mb-2">
+        <h2 className="text-xl font-bold">
           {session?.user
             ? `Olá, ${session.user.name?.split(" ")[0]}!`
-            : "Olá, vamos agendar um corte hoje?"}
+            : "Olá! Vamos agendar um corte hoje?"}
         </h2>
         <p className="capitalize text-sm">
           {format(new Date(), "EEEE',' dd 'de' MMMM", {
@@ -56,7 +56,6 @@ export default async function Home() {
             <h2 className="pl-5 text-xs mb-3 uppercase text-gray-400 font-bold">
               Agendamentos
             </h2>
-
             <div className="px-5 flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
               {confirmedBookings.map((booking) => (
                 <BookingItem key={booking.id} booking={booking} />
